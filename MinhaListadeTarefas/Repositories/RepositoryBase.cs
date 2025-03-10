@@ -1,107 +1,130 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MinhaListadeTarefas.Interfaces;
 using MinhaListadeTarefas.Models;
 
 namespace MinhaListadeTarefas.Repositories
 {
-    public class RepositoryBase<T> : IRepository<T>, IDisposable where T : class
-
+    public class RepositoryBase<T> : IRepositoryBase<T>, IDisposable where T : class
     {
 
-        public AppDbContext context;
-        public bool _saveChanges = true;
-        public RepositoryBase(AppDbContext dataContext, bool saveChanges)
+        public AppDbContext contexto;
+        public bool saveChanges = true;
+
+        public RepositoryBase(AppDbContext pContexto, bool pSaveChanges)
         {
-            context = dataContext;
-            _saveChanges = saveChanges;
+            contexto = pContexto;
+            saveChanges = pSaveChanges;
         }
 
-        public void Alterar(T entity)
+        public T Alterar(T entity)
         {
-         context.Entry<T>(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            if (_saveChanges)
+            contexto.Entry<T>(entity).State = EntityState.Modified;
+            if (saveChanges)
             {
-                context.SaveChanges();
+                contexto.SaveChanges();
             }
+            return entity;
+
         }
 
         public async Task<T> AlterarAsync(T entity)
         {
-            context.Entry<T>(entity).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
-            if (_saveChanges)
+            contexto.Entry<T>(entity).State = EntityState.Modified;
+            if (saveChanges)
             {
-                await context.SaveChangesAsync();
-               
+                await contexto.SaveChangesAsync();
             }
             return entity;
         }
 
         public void Dispose()
         {
-            context.Dispose();
+            contexto.Dispose();
         }
 
         public void Excluir(T entity)
         {
-            context.Entry<T>(entity).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
-            if (_saveChanges)
+            contexto.Entry<T>(entity).State = EntityState.Deleted;
+            if (saveChanges)
             {
-                context.SaveChanges();
+                contexto.SaveChanges();
+            }
+        }
+
+        public void Excluir(int id)
+        {
+            var obj = SelecionarChave(id);
+            if (obj != null)
+            {
+                contexto.Entry<T>(obj).State = EntityState.Deleted;
+                if (saveChanges)
+                {
+                    contexto.SaveChanges();
+                }
             }
         }
 
         public async Task ExcluirAsync(T entity)
         {
-            context.Entry<T>(entity).State = Microsoft.EntityFrameworkCore.EntityState.Deleted;
-            if (_saveChanges)
+            contexto.Entry<T>(entity).State = EntityState.Deleted;
+            if (saveChanges)
             {
-                await  context.SaveChangesAsync();
-            }
-            
-        }
-
-        public void Incluir(T entity)
-        {
-           context.Set<T>().Add(entity);
-            if (_saveChanges)
-            {
-                context.SaveChanges();
+                await contexto.SaveChangesAsync();
             }
         }
 
-        public async Task<T> IncluirAsync(T entity)
+        public async Task ExcluirAsync(int id)
         {
-            await context.Set<T>().AddAsync(entity);
-            if (_saveChanges)
+            var obj = await SelecionarChaveAsync(id);
+            if (obj != null)
             {
-                 await context.SaveChangesAsync();
+                contexto.Entry<T>(obj).State = EntityState.Deleted;
+                if (saveChanges)
+                {
+                    await contexto.SaveChangesAsync();
+                }
+            }
+        }
+
+        public T Incluir(T entity)
+        {
+            contexto.Set<T>().Add(entity);
+
+            if (saveChanges)
+            {
+                contexto.SaveChanges();
             }
             return entity;
         }
 
-        public T Selecionar(params object[] variavel)
+        public async Task<T> IncluirAsync(T entity)
         {
-           return context.Set<T>().Find(variavel);  
+            await contexto.Set<T>().AddAsync(entity);
+
+            if (saveChanges)
+            {
+                await contexto.SaveChangesAsync();
+            }
+            return entity;
         }
 
-        public async  Task<T> SelecionarAsync(params object[] variavel)
+        public List<T> ListarTodos()
         {
-              return await context.Set<T>().FindAsync(variavel);
+            return contexto.Set<T>().ToList();
+        }
+        public async Task<List<T>> ListarTodosAsync()
+        {
+            return await contexto.Set<T>().ToListAsync();
         }
 
-        public List<T> SelecionarTodos()
+        public T SelecionarChave(params object[] variavel)
         {
-            return context.Set<T>().ToList();
+            return contexto.Set<T>().Find(variavel)!;
         }
 
-        public async Task<List<T>> SelecionarTodosAsync()
+        public async Task<T> SelecionarChaveAsync(params object[] variavel)
         {
-            return await context.Set<T>().ToListAsync();
+            return await contexto.Set<T>().FindAsync(variavel);
         }
     }
 }
