@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MinhaListadeTarefas.Models;
+using MinhaListadeTarefas.Services;
 using System.Data;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace MinhaListadeTarefas.Controllers
 {
@@ -9,69 +12,42 @@ namespace MinhaListadeTarefas.Controllers
     {
 
         private AppDbContext _context;
-
+        private ServiceTarefa _serviceTarefa;
         public TarefaController(AppDbContext context)
         {
             _context = context;
+            _serviceTarefa = new ServiceTarefa(_context);
         }
 
-        public IActionResult Index()
+        public async Task CarregarCombos()
         {
-            var lista = new List<Tarefa>();
-            lista.Add(new Tarefa()
-            {
-                DataInicio = DateTime.Now,
-                DataFim = DateTime.Now.AddDays(5),
-                Id = 1,
-                Descricao = "Tarefa 1"
+            ViewData["Categorias"] = new SelectList(await _serviceTarefa.RptCategoria.ListarTodosAsync(), "Id", "Nome");
+            ViewData["Prioridades"] = new SelectList(await _serviceTarefa.RptProridade.ListarTodosAsync(), "Id", "Nome");
+            ViewData["Responsaveis"] = new SelectList(await _serviceTarefa.RptResponsavel.ListarTodosAsync(), "Id", "Nome");
+            ViewData["Status"] = new SelectList(await _serviceTarefa.RptStatus.ListarTodosAsync(), "Id", "Nome");
+        }
 
-            });
-            lista.Add(new Tarefa()
-            {
-                DataInicio = DateTime.Now,
-                DataFim = DateTime.Now.AddDays(5),
-                Id = 2,
-                Descricao = "Tarefa 2"
-
-            });
-            lista.Add(new Tarefa()
-            {
-                DataInicio = DateTime.Now,
-                DataFim = DateTime.Now.AddDays(5),
-                Id = 3,
-                Descricao = "Tarefa 3"
-
-            });
-            lista.Add(new Tarefa()
-            {
-                DataInicio = DateTime.Now,
-                DataFim = DateTime.Now.AddDays(5),
-                Id = 4,
-                Descricao = "Tarefa 4"
-
-            });
-
-            return View(lista);
+        public async Task<IActionResult> Index()
+        {
+            var listaTarefas =await  _serviceTarefa.RptTarefa.ListarTodosAsync();
+            return View(listaTarefas);
         }
 
         [HttpGet]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["Categorias"] = new SelectList(_context.Categorias.ToList(), "Id", "Nome");
-            ViewData["Prioridades"] = new SelectList(_context.Prioridades.ToList(), "Id", "Nome");
-            ViewData["Responsaveis"] = new SelectList(_context.Responsaveis.ToList(), "Id", "Nome");
-            ViewData["Status"] = new SelectList(_context.Status.ToList(), "Id", "Nome");
 
 
+            await CarregarCombos();
             return View();
         }
 
 
 
         [HttpPost]
-        public IActionResult Create(Tarefa tarefa)
+        public async Task<IActionResult> Create(Tarefa tarefa)
         {
-
+            await CarregarCombos();
             if (tarefa.DataFim < tarefa.DataInicio)
             {
                 ModelState.AddModelError("DataInicio", "A data de fim da tarefa não pode ser menor que a data da início.");
@@ -79,7 +55,7 @@ namespace MinhaListadeTarefas.Controllers
             if (ModelState.IsValid)
             {
                 ViewData["Mensagem"] = "Dados salvos com sucesso.";
-                ViewBag.Mensgem = "Dados salvos com sucesso.";
+                await _serviceTarefa.RptTarefa.IncluirAsync(tarefa);
                 return View(tarefa);
             }
             return View();
@@ -88,41 +64,7 @@ namespace MinhaListadeTarefas.Controllers
 
         public IActionResult Edit(int id)
         {
-            var lista = new List<Tarefa>();
-            lista.Add(new Tarefa()
-            {
-                DataInicio = DateTime.Now,
-                DataFim = DateTime.Now.AddDays(5),
-                Id = 1,
-                Descricao = "Tarefa 1"
-
-            });
-            lista.Add(new Tarefa()
-            {
-                DataInicio = DateTime.Now,
-                DataFim = DateTime.Now.AddDays(5),
-                Id = 2,
-                Descricao = "Tarefa 2"
-
-            });
-            lista.Add(new Tarefa()
-            {
-                DataInicio = DateTime.Now,
-                DataFim = DateTime.Now.AddDays(5),
-                Id = 3,
-                Descricao = "Tarefa 3"
-
-            });
-            lista.Add(new Tarefa()
-            {
-                DataInicio = DateTime.Now,
-                DataFim = DateTime.Now.AddDays(5),
-                Id = 4,
-                Descricao = "Tarefa 4"
-
-            });
-            var tarefa = (from p in lista where p.Id == id select p).FirstOrDefault();
-            return View(tarefa);
+            return View();
         }
 
     }
