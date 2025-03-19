@@ -29,7 +29,7 @@ namespace MinhaListadeTarefas.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var listaTarefas =await  _serviceTarefa.RptTarefa.ListarTodosAsync();
+            var listaTarefas = await _serviceTarefa.RptTarefa.ListarTodosAsync();
             return View(listaTarefas);
         }
 
@@ -62,9 +62,29 @@ namespace MinhaListadeTarefas.Controllers
         }
 
 
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int id)
         {
+            await CarregarCombos();
+            var tarefa = await _serviceTarefa.RptTarefa.SelecionarChaveAsync(id);
+            return View(tarefa);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(Tarefa tarefa)
+        {
+            await CarregarCombos();
+            if (tarefa.DataFim < tarefa.DataInicio)
+            {
+                ModelState.AddModelError("DataInicio", "A data de fim da tarefa não pode ser menor que a data da início.");
+            }
+            if (ModelState.IsValid)
+            {
+                ViewData["Mensagem"] = "Dados salvos com sucesso.";
+                await _serviceTarefa.RptTarefa.AlterarAsync(tarefa);
+                return View(tarefa);
+            }
             return View();
+
         }
 
     }

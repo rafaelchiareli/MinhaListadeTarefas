@@ -7,7 +7,7 @@
 }
 <h2>Essa é a minha index da lista de tarefas</h2>
 
-<table class="table table-striped">
+<table id="tabela" class="table table-striped">
 
     <thead>
         <tr>
@@ -23,14 +23,21 @@
             foreach (var item in Model)
             {
                 <tr>
-                <td>@item.Id</td>
-                <td>@item.Descricao</td>
-                <td>@item.DataInicio</td>
-                <td>@item.DataFim</td>
-                <td><a class="btn btn-secondary"  asp-action="Edit" asp-route-id="@item.Id">Editar</a></td>
+                    <td>@item.Id</td>
+                    <td>@item.Descricao</td>
+                    <td>@item.DataInicio</td>
+                    <td>@item.DataFim</td>
+                    <td><a class="btn btn-secondary" asp-action="Edit" asp-route-id="@item.Id">Editar</a></td>
                 </tr>
             }
         }
     </tbody>
-  
+
 </table>
+
+@section Scripts {
+    <script>
+
+        $("#tabela").DataTable();
+    </script>
+}

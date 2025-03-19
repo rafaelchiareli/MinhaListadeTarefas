@@ -1,48 +1,132 @@
-﻿@model MinhaListadeTarefas.Models.Tarefa
+﻿@model Tarefa
 
-@{
-    ViewData["Title"] = "Edit";
-}
+<h3>Editar uma Tarefa</h3>
+<form method="post">
+  
 
-<h1>Edit</h1>
+    <div class="d-flex" style="flex-direction:column;gap:20px">
 
-<h4>Tarefa</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
+        
+        <div class="form-group row" style="width:100%">
+            <div class="col-md-2">
+                <div>
+                    <label asp-for="DataInicio" class="form-label"></label>
+                </div>
+
+                <div>
+                    <input type="date" asp-for="DataInicio" class="form-control" />
+                    <span asp-validation-for="DataInicio" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Descricao" class="control-label"></label>
-                <input asp-for="Descricao" class="form-control" />
-                <span asp-validation-for="Descricao" class="text-danger"></span>
+
+            <div class="col-md-2">
+                <div>
+                    <label asp-for="DataFim" class="form-label"></label>
+                </div>
+
+                <div>
+                    <input type="date" asp-for="DataFim" class="form-control" />
+                    <span asp-validation-for="DataFim" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DataInicio" class="control-label"></label>
-                <input asp-for="DataInicio" class="form-control" />
-                <span asp-validation-for="DataInicio" class="text-danger"></span>
+        </div>
+        <div class="form-group row" style="width:100%">
+            <div class="col-md">
+                <div>
+                    <label asp-for="Descricao" class="form-label"></label>
+                </div>
+
+                <div>
+                    <input type="text" asp-for="Descricao" class="form-control" />
+                    <span asp-validation-for="Descricao" class="text-danger"></span>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="DataFim" class="control-label"></label>
-                <input asp-for="DataFim" class="form-control" />
-                <span asp-validation-for="DataFim" class="text-danger"></span>
+        </div>
+        <div class="form-group row" style="width:100%">
+            <div>
+                <label asp-for="CategoriaId" class="form-label"></label>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div>
+                <select class="form-select" asp-for="CategoriaId" asp-items="@ViewBag.Categorias" class="form-control">
+
+                    <option value="">Selecione uma categoria</option>
+                </select>
+
+                <span asp-validation-for="CategoriaId" class="text-danger"></span>
             </div>
-        </form>
+        </div>
+        <div class="form-group row" style="width:100%">
+            <div>
+                <label asp-for="PrioridadeId" class="form-label"></label>
+            </div>
+            <div>
+                <select class="form-select" asp-for="PrioridadeId" asp-items="@ViewBag.Prioridades" class="form-control">
+
+                    <option value="">Selecione uma prioridade</option>
+                </select>
+
+                <span asp-validation-for="PrioridadeId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row" style="width:100%">
+            <div>
+                <label asp-for="ResponsavelId" class="form-label"></label>
+            </div>
+            <div>
+                <select class="form-select" asp-for="@Model.ResponsavelId" asp-items="@ViewBag.Responsaveis" class="form-control">
+
+                    <option value="">Selecione um responsável</option>
+                </select>
+
+                <span asp-validation-for="ResponsavelId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row" style="width:100%">
+            <div>
+                <label asp-for="StatusId" class="form-label"></label>
+            </div>
+            <div>
+                <select class="form-select" asp-for="StatusId" asp-items="@ViewBag.Status" class="form-control">
+
+                    <option value="">Selecione um status</option>
+                </select>
+
+                <span asp-validation-for="StatusId" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group row" style="width:100%">
+            <div class="col-md">
+                <div>
+                    <label asp-for="Observacao" class="form-label"></label>
+                </div>
+
+                <div>
+                    <input type="text" asp-for="Observacao" class="form-control" />
+                    <span asp-validation-for="Observacao" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+        <div>
+            <button class="btn btn-primary"><i class="fa-solid fa-floppy-disk"></i>&nbsp;Salvar</button>
+        </div>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
+
+</form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        const mensagem = "@ViewData["Mensagem"]";
+
+        if (mensagem != ""){
+              Swal.fire({
+                  title: "Lista de Tarefas",
+                  text: "Tarefa criada com sucesso.",
+                  icon: "success"
+        });
+        }
+
+
+    </script>
 }
