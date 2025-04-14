@@ -1,5 +1,6 @@
 ﻿using MinhaListadeTarefas.Models;
 using MinhaListadeTarefas.Repositories;
+using MinhaListadeTarefas.ViewModels;
 
 namespace MinhaListadeTarefas.Services
 {
@@ -23,8 +24,12 @@ namespace MinhaListadeTarefas.Services
             RptResponsavel = new RepositoryResponsavel(_context);
             RptStatus = new RepositoryStatus(_context);
         }
+        
 
-   
+        public async Task IncluirTarefaAsync(TarefaVM tarefaVm)
+        {
+            
+        }
 
 
 

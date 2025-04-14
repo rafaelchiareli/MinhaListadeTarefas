@@ -45,6 +45,7 @@ namespace MinhaListadeTarefas.Models
         public int ResponsavelId { get; set; }
 
         
+        public virtual ICollection<Subtarefa> Subtarefas { get; set; }
         public virtual Responsavel? Responsavel { get; set; }
 
         public DateTime PrazoConclusao { get; set; }

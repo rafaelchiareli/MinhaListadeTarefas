@@ -10,5 +10,10 @@ namespace MinhaListadeTarefas.Repositories
         {
             
         }       
+
+        public List<Tarefa> PesquisarTarefa(string termo)
+        {
+            return contexto.Tarefas.Where(x => x.Descricao.Contains(termo)).ToList();
+        }
     }
 }

@@ -5,10 +5,15 @@ namespace MinhaListadeTarefas.Models
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext()
+        {
+        }
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
         }
         public DbSet<Tarefa> Tarefas { get; set; }
+        public DbSet<Subtarefa> Subtarefas { get; set; }
         public DbSet<Responsavel> Responsaveis { get; set; }
         public DbSet<Status> Status { get; set; }
         public DbSet<Categoria> Categorias { get; set; }
@@ -34,6 +39,12 @@ namespace MinhaListadeTarefas.Models
                 .HasOne(t => t.Status)
                 .WithMany()
                 .HasForeignKey(t => t.StatusId);
+
+            modelBuilder.Entity<Tarefa>()
+                .HasMany(t => t.Subtarefas)
+                .WithOne(st => st.Tarefa)
+                .HasForeignKey(st => st.TarefaId);
+
         }
     }
 }

@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using MinhaListadeTarefas.Helpers;
 using MinhaListadeTarefas.Models;
 using MinhaListadeTarefas.Services;
+using MinhaListadeTarefas.ViewModels;
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
@@ -52,18 +54,31 @@ namespace MinhaListadeTarefas.Controllers
 
 
 
+       public IActionResult Consultar()
+        {
+            return View();  
+        }
+        public IActionResult Pesquisar(string termo)
+        {
+            var listaTarefas = TarefaVM.ListarTarefasAsync(termo);
+            return PartialView("_Pesquisa", listaTarefas);
+
+             
+        }
+
         [HttpPost]
-        public async Task<IActionResult> Create(Tarefa tarefa)
+        public async Task<IActionResult> Create(TarefaVM tarefa)
         {
             await CarregarCombos();
-            if (tarefa.DataFim < tarefa.DataInicio)
+            if (tarefa.DataConclusao < tarefa.DataInicio)
             {
                 ModelState.AddModelError("DataInicio", "A data de fim da tarefa não pode ser menor que a data da início.");
             }
+            var teste = Request.Form["txtTeste"];
             if (ModelState.IsValid)
             {
                 ViewData["Mensagem"] = "Dados salvos com sucesso.";
-                await _serviceTarefa.RptTarefa.IncluirAsync(tarefa);
+                await _serviceTarefa.IncluirTarefaAsync(tarefa);
                 return View(tarefa);
             }
             return View();
