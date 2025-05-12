@@ -1,0 +1,40 @@
+﻿@model Role
+@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<h2>Cadastra nova Role</h2>
+<form method="post">
+
+    <div>
+        <label class="form-label">Nome</label>
+        <input asp-for="RoleName" class="form-control" />
+    </div>
+    <button class="btn btn-primary">Salvar</button>
+</form>
+@section Scripts{
+    <script>
+        var msg = "@ViewData["Mensagem"]";
+         var msgErro = "@ViewData["MensagemErro"]";
+
+         if (msg != "") {
+           Swal.fire({
+                      title: "Lista de Tarefas",
+                      text: msg,
+                      icon: "success"
+                })
+         }
+           if (msgErro != "") {
+           Swal.fire({
+                      title: "Lista de Tarefas",
+                      text: msgErro,
+                      icon: "error"
+                })
+         }
+
+
+
+    </script>
+
+}

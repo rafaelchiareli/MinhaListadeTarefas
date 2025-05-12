@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MinhaListadeTarefas.Controllers
 {
-    public class TarefaController : Controller
+    public class TarefaController : DefaultController
     {
 
         private AppDbContext _context;

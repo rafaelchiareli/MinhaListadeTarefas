@@ -1,10 +1,12 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MinhaListadeTarefas.Models;
 using System.Diagnostics;
 
 namespace MinhaListadeTarefas.Controllers
 {
-    public class HomeController : Controller
+
+    public class HomeController : DefaultController
     {
         private readonly ILogger<HomeController> _logger;
 

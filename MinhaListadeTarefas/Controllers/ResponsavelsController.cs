@@ -9,7 +9,7 @@ using MinhaListadeTarefas.Models;
 
 namespace MinhaListadeTarefas.Controllers
 {
-    public class ResponsavelsController : Controller
+    public class ResponsavelsController : DefaultController
     {
         private readonly AppDbContext _context;
 

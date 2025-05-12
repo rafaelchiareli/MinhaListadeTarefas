@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,7 @@ using MinhaListadeTarefas.Models;
 
 namespace MinhaListadeTarefas.Controllers
 {
+    
     public class StatusController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,12 +21,14 @@ namespace MinhaListadeTarefas.Controllers
         }
 
         // GET: Status
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index()
         {
             return View(await _context.Status.ToListAsync());
         }
 
         // GET: Status/Details/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,6 +47,7 @@ namespace MinhaListadeTarefas.Controllers
         }
 
         // GET: Status/Create
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View();
@@ -50,7 +55,9 @@ namespace MinhaListadeTarefas.Controllers
 
         // POST: Status/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
+
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Nome")] Status status)
@@ -65,6 +72,7 @@ namespace MinhaListadeTarefas.Controllers
         }
 
         // GET: Status/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -83,6 +91,7 @@ namespace MinhaListadeTarefas.Controllers
         // POST: Status/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] Status status)
@@ -116,6 +125,7 @@ namespace MinhaListadeTarefas.Controllers
         }
 
         // GET: Status/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,6 +144,7 @@ namespace MinhaListadeTarefas.Controllers
         }
 
         // POST: Status/Delete/5
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
