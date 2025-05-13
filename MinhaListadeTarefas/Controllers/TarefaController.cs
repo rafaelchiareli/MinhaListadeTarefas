@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using MinhaListadeTarefas.Helpers;
 using MinhaListadeTarefas.Models;
@@ -16,9 +17,11 @@ namespace MinhaListadeTarefas.Controllers
 
         private AppDbContext _context;
         private ServiceTarefa _serviceTarefa;
-        public TarefaController(AppDbContext context)
+        private UserManager<IdentityUser> _userManager;
+        public TarefaController(AppDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
             _serviceTarefa = new ServiceTarefa(_context);
         }
 
@@ -70,6 +73,7 @@ namespace MinhaListadeTarefas.Controllers
         public async Task<IActionResult> Create(TarefaVM tarefa)
         {
             await CarregarCombos();
+            var user = _userManager.GetUserAsync(User);
             if (tarefa.DataConclusao < tarefa.DataInicio)
             {
                 ModelState.AddModelError("DataInicio", "A data de fim da tarefa não pode ser menor que a data da início.");
