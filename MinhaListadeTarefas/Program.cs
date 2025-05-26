@@ -27,6 +27,13 @@ builder.Services.AddDefaultIdentity<IdentityUser>(opt=> opt.SignIn.RequireConfir
 
 
 builder.Services.AddRazorPages();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder => builder.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader());
+});
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -40,6 +47,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
   
 }
+app.UseCors("AllowAllOrigins");
 app.UseSwagger();
 app.UseSwaggerUI();
 app.UseHttpsRedirection();
